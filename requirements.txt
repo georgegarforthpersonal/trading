@@ -80,3 +80,5 @@ websocket-client==1.6.3
 websockets==10.4
 Werkzeug==2.2.3
 yarl==1.9.2
+sqlalchemy
+psycopg2

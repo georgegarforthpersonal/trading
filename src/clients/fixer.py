@@ -1,7 +1,10 @@
+from datetime import datetime, timedelta
+
 import requests
 
 FIXER_BASE_URL = "http://data.fixer.io/api"
 FIXER_API_KEY = "372a3c2d1fde660e7c14be8e435e6042"
+
 
 def get_latest():
     url = f"{FIXER_BASE_URL}/latest?access_key={FIXER_API_KEY}"
@@ -22,9 +25,15 @@ def get_timeseries(start_date: str, end_date: str) -> dict:
     response = requests.request("GET", url)
     return response.json()
 
+
 if __name__ == "__main__":
 
-    print(get_latest())
+    start_date = datetime(2022, 1, 1)
+    for i in range(365):
+        s = start_date.strftime("%Y-%m-%d")
+        print(get_historical(s))
+        start_date += timedelta(days=1)
 
+print('y')
 
 

@@ -1,6 +1,4 @@
-from dash import Dash, html, dcc, callback, Output, Input
-import plotly.express as px
-import pandas as pd
+from dash import Dash, html, dcc
 
 import sys
 import os
@@ -10,12 +8,7 @@ sys.path.append(root_path)
 import alpaca_trade_api as tradeapi
 import config as cf
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
-
-from src import alpaca
-from src import plotting
-import plotly.io as pio
 
 # Instantiate REST API Connection
 api = tradeapi.REST(key_id=cf.APCA_API_KEY, secret_key=cf.APCA_SECRET_KEY, 
