@@ -1,5 +1,6 @@
 import psycopg2
 
+
 # Establish connection to your PostgreSQL database
 conn = psycopg2.connect(
     dbname="postgres",
@@ -13,9 +14,9 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 create_table_query = '''
-    CREATE TABLE IF NOT EXISTS users (
+    CREATE TABLE IF NOT EXISTS forex (
         id SERIAL PRIMARY KEY,
-        username VARCHAR(50) UNIQUE NOT NULL,
+        base_currency VARCHAR(50) UNIQUE NOT NULL,
         email VARCHAR(100) UNIQUE NOT NULL
     );
 '''
@@ -44,4 +45,3 @@ print("Data inserted successfully!")
 cur.close()
 conn.close()
 
-print('y')

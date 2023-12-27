@@ -12,9 +12,10 @@ def get_latest():
     return response.text
 
 
-def get_historical(date: str) -> dict:
+def get_historical(date: str, base: str) -> dict:
     """date provided in the form 2013-12-24"""
-    url = f"{FIXER_BASE_URL}/{date}?access_key={FIXER_API_KEY}"
+    """base currency restricted to EUR for free plan"""
+    url = f"{FIXER_BASE_URL}/{date}?access_key={FIXER_API_KEY}&base={base}"
     response = requests.request("GET", url)
     return response.json()
 
@@ -26,14 +27,14 @@ def get_timeseries(start_date: str, end_date: str) -> dict:
     return response.json()
 
 
-if __name__ == "__main__":
-
-    start_date = datetime(2022, 1, 1)
-    for i in range(365):
-        s = start_date.strftime("%Y-%m-%d")
-        print(get_historical(s))
-        start_date += timedelta(days=1)
-
-print('y')
+# if __name__ == "__main__":
+#
+#     start_date = datetime(2022, 1, 1)
+#     for i in range(3):
+#         s = start_date.strftime("%Y-%m-%d")
+#         print(get_historical(s, "EUR"))
+#         start_date += timedelta(days=1)
+#
+# print('y')
 
 
