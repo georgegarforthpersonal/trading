@@ -1,47 +1,63 @@
-import psycopg2
+from sqlalchemy.orm import sessionmaker
+from datetime import timedelta, datetime
+
+from constants import DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME
+from src.models import CurrencyRate, CurrencyPair, Base
+from src.clients.database import DatabaseConnection
+from src.clients.fixer import get_historical
 
 
-# Establish connection to your PostgreSQL database
-conn = psycopg2.connect(
-    dbname="postgres",
-    user="georgegarforth",
-    password="Touc@n16",
-    host="127.0.0.1",
-    port="5434"
+# Establish a database connection
+db_connection = DatabaseConnection(
+    username=DB_USERNAME,
+    password=DB_PASSWORD,
+    host=DB_HOST,
+    port=DB_PORT,
+    dbname=DB_NAME
 )
+engine = db_connection.create_engine()
 
-# Create a cursor object to execute SQL queries
-cur = conn.cursor()
+# Create tables if they do not exist
+Base.metadata.create_all(engine)
 
-create_table_query = '''
-    CREATE TABLE IF NOT EXISTS forex (
-        id SERIAL PRIMARY KEY,
-        base_currency VARCHAR(50) UNIQUE NOT NULL,
-        email VARCHAR(100) UNIQUE NOT NULL
-    );
-'''
+Session = sessionmaker(bind=engine)
+session = Session()
 
-cur.execute(create_table_query)
-print("Table created successfully!")
+base = 'EUR'
+start_date = datetime(2023, 12, 1)
+end_date = datetime(2023, 12, 28)  # Set your end date
 
-# Insert data into the table
-insert_query = '''
-    INSERT INTO users (username, email)
-    VALUES (%s, %s);
-'''
+date = start_date
 
-# Sample data to insert
-user_data = [
-    ("john_doe", "john@example.com"),
-    ("jane_smith", "jane@example.com"),
-    ("mike_jones", "mike@example.com")
-]
+while date <= end_date:
 
-cur.executemany(insert_query, user_data)
-conn.commit()
-print("Data inserted successfully!")
+    response_data = get_historical(date.strftime("%Y-%m-%d"), base=base)
 
-# Close communication with the database
-cur.close()
-conn.close()
+    for currency, rate in response_data['rates'].items():
 
+        if currency == base:  # Skip trivial pairs e.g. EUR_EUR
+            continue
+
+        # Check if the currency pair already exists in the database
+        currency_pair = session.query(CurrencyPair).filter_by(currency_1=base, currency_2=currency).first()
+        if not currency_pair:
+            # If the currency pair doesn't exist, create a new CurrencyPair instance
+            currency_pair = CurrencyPair(id=f'{base}_{currency}', currency_1='EUR', currency_2=currency)
+            session.add(currency_pair)
+
+        # Extract data from the API response
+        data_to_insert = {
+            'id': f'{base}_{currency}_{date.strftime("%Y-%m-%d")}',
+            'currency_pair_id': f'{base}_{currency}',
+            'timestamp': datetime.strptime(response_data['date'], '%Y-%m-%d'),
+            'rate': response_data['rates'][currency]
+        }
+
+        # Create an instance of the model and add it to the session
+        currency_rate = CurrencyRate(**data_to_insert)
+        session.add(currency_rate)
+
+    date += timedelta(days=1)
+
+# Commit the session to insert the data into the database
+session.commit()
