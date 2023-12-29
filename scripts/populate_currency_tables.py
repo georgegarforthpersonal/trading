@@ -1,3 +1,5 @@
+import logging
+
 from sqlalchemy.orm import sessionmaker
 from datetime import timedelta, datetime
 from constants import DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME
@@ -10,17 +12,11 @@ logger = setup_logger(logger_name=__name__)
 
 # Define variables
 base_currency = 'EUR'
-start_date = datetime(2023, 12, 1)
-end_date = datetime(2023, 12, 29)  # Set your end date
+start_date = datetime(2022, 1, 1)
+end_date = datetime(2023, 12, 29)
 
 # Establish a database connection
-db_connection = DatabaseConnection(
-    username=DB_USERNAME,
-    password=DB_PASSWORD,
-    host=DB_HOST,
-    port=DB_PORT,
-    dbname=DB_NAME
-)
+db_connection = DatabaseConnection()
 engine = db_connection.create_engine()
 
 # Create tables if they do not exist
