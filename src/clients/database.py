@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
+import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import sessionmaker
@@ -23,7 +24,7 @@ class DatabaseConnection:
         connection_string = f"postgresql://{self.username}:{self.password}@{self.host}:{self.port}/{self.dbname}"
         return create_engine(connection_string)
 
-    def get_rates_between_timestamps_as_series(
+    def get_rates_as_series(
             self,
             base_currency: str,
             quote_currency: str,
@@ -44,7 +45,7 @@ class DatabaseConnection:
             if timestamp_before is not None:
                 currency_rates = currency_rates.filter(CurrencyRate.timestamp <= timestamp_before)
             rates = [(rate.timestamp, rate.rate) for rate in currency_rates.all()]
-            return rates
+            return pd.Series([d[1] for d in rates], index=[d[0] for d in rates]).sort_index()
         except NoResultFound:
             return []  # Return an empty list if no results are found
         finally:
