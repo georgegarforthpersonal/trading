@@ -30,7 +30,7 @@ class DatabaseConnection:
             quote_currency: str,
             timestamp_after: Optional[datetime] = None,
             timestamp_before: Optional[datetime] = None
-    ):
+    ) -> pd.Series:
         engine = self.create_engine()
         Session = sessionmaker(bind=engine)
         session = Session()
@@ -47,7 +47,7 @@ class DatabaseConnection:
             rates = [(rate.timestamp, rate.rate) for rate in currency_rates.all()]
             return pd.Series([d[1] for d in rates], index=[d[0] for d in rates]).sort_index()
         except NoResultFound:
-            return []  # Return an empty list if no results are found
+            return pd.Series()  # Return an empty series if no results are found
         finally:
             session.close()
 
