@@ -1,6 +1,4 @@
 from datetime import timedelta, datetime
-from typing import Optional
-
 import plotly.graph_objects as go
 import pandas as pd
 

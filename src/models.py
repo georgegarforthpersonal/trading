@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from sqlalchemy import create_engine, Column, String, DateTime, Float, ForeignKey, Integer
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
@@ -63,3 +65,19 @@ class CurrencyRate(Base):
 
     def __str__(self):
         return f"CurrencyRate(id={self.id}, timestamp={self.timestamp}, rate={self.rate})"
+
+
+@dataclass
+class Midpoint:
+    o: str
+    h: str
+    l: str
+    c: str
+
+
+@dataclass
+class Candle:
+    complete: bool
+    volume: int
+    time: str
+    mid: Midpoint
