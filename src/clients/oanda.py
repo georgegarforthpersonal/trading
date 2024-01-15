@@ -1,16 +1,17 @@
-# ONADA API wrapper docs https://oanda-api-v20.readthedocs.io/en/latest/index.html
+# OANDA API wrapper docs https://oanda-api-v20.readthedocs.io/en/latest/index.html
 
 import requests
 from oandapyV20.contrib.requests import MarketOrderRequest
 from oandapyV20.endpoints.orders import OrderCreate
 
-from config import ONADA_API_KEY, ONADA_BASE_URL, ONADA_ACCOUNT_ID
+from config import OANDA_API_KEY, OANDA_BASE_URL, OANDA_ACCOUNT_ID
 from logger import setup_logger
 from oandapyV20 import API
 from oandapyV20.exceptions import V20Error
 from oandapyV20.endpoints.instruments import InstrumentsCandles
 import oandapyV20
 import oandapyV20.endpoints.orders as orders
+import oandapyV20.endpoints.trades as trades
 
 from models import Candle, Midpoint
 
@@ -18,9 +19,9 @@ logger = setup_logger(logger_name=__name__)
 
 
 def get_account_details():
-    url = f"{ONADA_BASE_URL}/v3/accounts"
+    url = f"{OANDA_BASE_URL}/v3/accounts"
     headers = {
-        "Authorization": f"Bearer {ONADA_API_KEY}"
+        "Authorization": f"Bearer {OANDA_API_KEY}"
     }
     response = requests.get(url, headers=headers)
     return response.json()
@@ -41,7 +42,7 @@ def get_latest_candle_data(instrument='GBP_USD', granularity='D', count=1):
     - List of candle data
     """
     # Initialize the OANDA API
-    api = API(access_token=ONADA_API_KEY, environment='practice')  # Use 'live' for a live account
+    api = API(access_token=OANDA_API_KEY, environment='practice')  # Use 'live' for a live account
 
     # Set the parameters for the candle request
     params = {
@@ -63,21 +64,17 @@ def get_latest_candle_data(instrument='GBP_USD', granularity='D', count=1):
 
 class OrderSubmitter:
     def __init__(self):
-        self.client = oandapyV20.API(access_token=ONADA_API_KEY, environment="practice")
-        self.accountID = ONADA_ACCOUNT_ID
+        self.client = oandapyV20.API(access_token=OANDA_API_KEY, environment="practice")
+        self.accountID = OANDA_ACCOUNT_ID
 
     def submit_order(self, data):
-        endpoint = f'v3/accounts/{self.accountID}/orders'
-        headers = {'Content-Type': 'application/json'}
-        method = 'POST'
-
         order_request = orders.OrderCreate(accountID=self.accountID, data=data)
         response = self.client.request(order_request)
         return response['orderCreateTransaction']
 
 
 def get_order_list():
-    client = API(access_token=ONADA_API_KEY, environment="practice")
-    r = orders.OrderList(ONADA_ACCOUNT_ID)
+    client = API(access_token=OANDA_API_KEY, environment="practice")
+    r = orders.OrderList(OANDA_ACCOUNT_ID)
     client.request(r)
     return r.response
