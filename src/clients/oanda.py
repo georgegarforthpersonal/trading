@@ -17,32 +17,17 @@ from models import Candle, Midpoint
 
 logger = setup_logger(logger_name=__name__)
 
-
-def get_account_details():
-    url = f"{OANDA_BASE_URL}/v3/accounts"
-    headers = {
-        "Authorization": f"Bearer {OANDA_API_KEY}"
-    }
-    response = requests.get(url, headers=headers)
-    return response.json()
+# Initialize the OANDA API
+api = API(access_token=OANDA_API_KEY, environment='practice')  # Use 'live' for a live account
 
 
-def get_latest_candle_data(instrument='GBP_USD', granularity='D', count=1):
+
+def get_latest_candle_data(instrument, granularity, count):
     """
     Get the latest candle data for a specific instrument and granularity.
-
-    Parameters:
-    - api_key: Your OANDA API key
-    - account_id: Your OANDA account ID
-    - instrument: The trading instrument (default is 'GBP_USD')
-    - granularity: The granularity of the candlesticks (default is 'D' for day)
-    - count: The number of candlesticks to retrieve (default is 1)
-
-    Returns:
-    - List of candle data
+    count: The number of candlesticks to retrieve (default is 1)
+    granularity: The granularity of the candlesticks (default is 'D' for day)
     """
-    # Initialize the OANDA API
-    api = API(access_token=OANDA_API_KEY, environment='practice')  # Use 'live' for a live account
 
     # Set the parameters for the candle request
     params = {
@@ -50,31 +35,29 @@ def get_latest_candle_data(instrument='GBP_USD', granularity='D', count=1):
         'granularity': granularity,
     }
 
-    # Make the request to get candle data
-    try:
-        request = InstrumentsCandles(instrument=instrument, params=params)
-        response = api.request(request)
-        data = response['candles']
-        return [Candle(**{**item, 'mid': Midpoint(**item['mid'])}) for item in data]
+    request = InstrumentsCandles(instrument=instrument, params=params)
+    response = api.request(request)
+    data = response['candles']
 
-    except V20Error as e:
-        print(f"Error retrieving candle data: {e}")
-        return None
+    return [Candle(**{**item, 'mid': Midpoint(**item['mid'])}) for item in data]
 
 
-class OrderSubmitter:
-    def __init__(self):
-        self.client = oandapyV20.API(access_token=OANDA_API_KEY, environment="practice")
-        self.accountID = OANDA_ACCOUNT_ID
-
-    def submit_order(self, data):
-        order_request = orders.OrderCreate(accountID=self.accountID, data=data)
-        response = self.client.request(order_request)
-        return response['orderCreateTransaction']
-
-
-def get_order_list():
+def place_order(data):
     client = API(access_token=OANDA_API_KEY, environment="practice")
-    r = orders.OrderList(OANDA_ACCOUNT_ID)
+    r = orders.OrderCreate(OANDA_ACCOUNT_ID, data=data)
+    client.request(r)
+    return r.response
+
+
+def get_trades():
+    client = API(access_token=OANDA_API_KEY, environment="practice")
+    r = trades.OpenTrades(OANDA_ACCOUNT_ID)
+    client.request(r)
+    return r.response
+
+
+def close_trade(trade_id):
+    client = API(access_token=OANDA_API_KEY, environment="practice")
+    r = trades.TradeClose(accountID=OANDA_ACCOUNT_ID, tradeID=trade_id)
     client.request(r)
     return r.response
