@@ -1,14 +1,14 @@
 # OANDA API wrapper docs https://oanda-api-v20.readthedocs.io/en/latest/index.html
 
 
-from config import OANDA_API_KEY, OANDA_BASE_URL, OANDA_ACCOUNT_ID
+from config import OANDA_API_KEY, OANDA_ACCOUNT_ID
 from logger import setup_logger
 from oandapyV20 import API
 from oandapyV20.endpoints.instruments import InstrumentsCandles
 import oandapyV20.endpoints.orders as orders
 import oandapyV20.endpoints.trades as trades
 
-from models import Candle, Midpoint
+from src.models import Candle, Midpoint
 
 logger = setup_logger(logger_name=__name__)
 
