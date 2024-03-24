@@ -1,3 +1,5 @@
 oandapyV20
 path
 google-cloud-storage
+six
+sqlalchemy
