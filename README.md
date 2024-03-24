@@ -40,3 +40,7 @@ Now we have our image in the repository. We can deploy it to Cloud Run.
 - Select the image we just uploaded to Artifact Registry
 - Fill out the remaining fields as you see fit, or leave the defaults in place
 - Check the box that says Execute job immediately
+
+# Useful Resources
+
+- https://www.practiceprobs.com/blog/2022/12/15/how-to-schedule-a-python-script-with-docker-and-google-cloud/#__tabbed_1_1
