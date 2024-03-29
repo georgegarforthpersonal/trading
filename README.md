@@ -8,7 +8,7 @@ The tag configures the docker push command to push the image to a specific locat
 ```bash
 docker image build \
 --platform linux/amd64 \
---tag us-central1-docker.pkg.dev/trading-416814/trading/1.0:tag1 \
+--tag us-central1-docker.pkg.dev/trading-416814/trading/1.0:tag2 \
 .
 ```
 
@@ -18,7 +18,7 @@ Run the image using docker run in interactive mode (-i).
 
 ```bash
 docker run --rm -it \
-us-central1-docker.pkg.dev/trading-416814/trading/1.0:tag1
+us-central1-docker.pkg.dev/trading-416814/trading/1.0:tag2
 ```
 
 ## 1.3 Push the Docker image to Google Container Registry
@@ -27,7 +27,7 @@ We've confirmed our Docker image works. Now we need to push it to our Cloud Arti
 
 ```bash
 docker push \
-us-central1-docker.pkg.dev/trading-416814/trading/1.0:tag1
+us-central1-docker.pkg.dev/trading-416814/trading/1.0:tag2
 ```
 
 ## 1.4 Deploy the Docker image to Cloud Run

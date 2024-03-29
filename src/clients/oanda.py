@@ -7,6 +7,8 @@ from oandapyV20 import API
 from oandapyV20.endpoints.instruments import InstrumentsCandles
 import oandapyV20.endpoints.orders as orders
 import oandapyV20.endpoints.trades as trades
+import oandapyV20.endpoints.positions as positions
+import oandapyV20.endpoints.transactions as transactions
 
 from src.models import Candle, Midpoint
 
@@ -60,5 +62,36 @@ def get_trades():
 def close_trade(trade_id):
     client = API(access_token=OANDA_API_KEY, environment="practice")
     r = trades.TradeClose(accountID=OANDA_ACCOUNT_ID, tradeID=trade_id)
+    client.request(r)
+    return r.response
+
+
+def get_positions():
+    client = API(access_token=OANDA_API_KEY, environment="practice")
+    r = positions.PositionList(OANDA_ACCOUNT_ID)
+    client.request(r)
+    return r.response
+
+
+def get_transactions():
+    client = API(access_token=OANDA_API_KEY, environment="practice")
+    r = transactions.TransactionList(OANDA_ACCOUNT_ID)
+    client.request(r)
+    return r.response
+
+
+def get_transaction_details(transaction_id):
+    client = API(access_token=OANDA_API_KEY, environment="practice")
+    r = transactions.TransactionDetails(OANDA_ACCOUNT_ID, transaction_id)
+    client.request(r)
+    return r.response
+
+
+def get_transactions_since(transaction_id):
+    client = API(access_token=OANDA_API_KEY, environment="practice")
+    params = {
+        'id': transaction_id
+    }
+    r = transactions.TransactionsSinceID(OANDA_ACCOUNT_ID, params=params)
     client.request(r)
     return r.response
