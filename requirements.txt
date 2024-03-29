@@ -3,3 +3,4 @@ path
 google-cloud-storage
 six
 sqlalchemy
+streamlit

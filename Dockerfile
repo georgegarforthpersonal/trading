@@ -1,13 +1,15 @@
-# Start with python 3.11 image
-FROM python:3.11-slim
+FROM python:3.9.12
 
-# Install pip requirements
-COPY requirements.txt .
-RUN python -m pip install -r requirements.txt
+EXPOSE 8501
 
-# Copy the current directory into /app on the image
 WORKDIR /app
-COPY . /app
 
-# Entry point command
-CMD ["python", "main.py"]
+COPY requirements.txt .
+
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+COPY app.py .
+
+ENTRYPOINT [ "streamlit", "run"]
+CMD ["app.py"]
