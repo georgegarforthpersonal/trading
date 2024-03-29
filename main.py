@@ -2,23 +2,16 @@
 
 import sys
 from path import Path
+from utils import get_datetime_from_oanda_datetime_str
+from logger import setup_logger
+from src.clients.oanda import get_latest_candle_data, get_open_trades, close_trade, place_order
 
 root_path = current_script_path = Path(__file__).parent.parent
-
 sys.path.append(root_path)
-
-from logger import setup_logger
-from datetime import datetime
-from src.clients.oanda import get_latest_candle_data, get_trades, get_open_trades, close_trade, place_order
 
 logger = setup_logger(logger_name=__name__)
 
 CURRENCY_PAIRS = ['GBP_USD', 'USD_JPY', 'GBP_USD', 'USD_CHF', 'AUD_USD', 'USD_CAD', 'NZD_USD']
-
-
-def get_datetime_from_oanda_datetime_str(datetime_str):
-    """Oanda datetime strings are in the format '2022-01-01T00:00:00.000000000Z'"""
-    return datetime.strptime(datetime_str.split('.')[0], '%Y-%m-%dT%H:%M:%S')
 
 
 def main():
@@ -53,7 +46,6 @@ def main():
                 logger.info("Trade closed.")
             else:
                 logger.info("No trades open.")
-
 
 
 if __name__ == '__main__':
