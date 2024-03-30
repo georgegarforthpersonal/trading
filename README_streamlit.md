@@ -9,16 +9,15 @@ The tag configures the docker push command to push the image to a specific locat
 
 
 ```bash
-docker build . -t us-central1-docker.pkg.dev/trading-416814/trading-dashboard/1.0:tag3
+docker build . --platform linux/amd64 -t us-central1-docker.pkg.dev/trading-416814/trading-dashboard/1.0:tag4
 ```
 ## 1.2 Run the Docker image locally
 
-Run the image using docker run in interactive mode (-i).
+Note that this image won't run locally with the `--platform linux/amd64` flag. Remove this and rebuild to test locally.
 
-```docker run -p 8501:8501 tag1```
 
 ```bash
-docker run -p 8080:8080 -t us-central1-docker.pkg.dev/trading-416814/trading-dashboard/1.0:tag3
+docker run -p 8080:8080 -t us-central1-docker.pkg.dev/trading-416814/trading-dashboard/1.0:tag4
 ```
 
 ## 1.3 Push the Docker image to Google Container Registry
@@ -26,7 +25,7 @@ docker run -p 8080:8080 -t us-central1-docker.pkg.dev/trading-416814/trading-das
 We've confirmed our Docker image works. Now we need to push it to our Cloud Artifact repository. Do that with docker push
 
 ```bash
-docker push us-central1-docker.pkg.dev/trading-416814/trading-dashboard/1.0:tag3
+docker push us-central1-docker.pkg.dev/trading-416814/trading-dashboard/1.0:tag4
 ```
 
 ## 1.4 Deploy the Docker image to Cloud Services
