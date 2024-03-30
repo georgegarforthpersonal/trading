@@ -1,9 +1,15 @@
+import sys
+from path import Path
+
+root_path = current_script_path = Path(__file__).parent.parent
+sys.path.append(root_path)
+
+
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from models import Candle
+from src.models import Candle
 from datetime import datetime, date
-
 
 def plot_candlestick_chart(candles: list[Candle]) -> go.Figure():
     fig = go.Figure(data=[go.Candlestick(x=[candle.time for candle in candles],
