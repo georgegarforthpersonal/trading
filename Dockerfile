@@ -1,6 +1,6 @@
 FROM python:3.9.12
 
-EXPOSE 8501
+EXPOSE 8080
 
 WORKDIR /app
 
@@ -11,5 +11,5 @@ RUN pip install -r requirements.txt
 
 COPY app.py .
 
-ENTRYPOINT [ "streamlit", "run"]
+ENTRYPOINT [ "streamlit", "run", "--server.port=8080"]
 CMD ["app.py"]
